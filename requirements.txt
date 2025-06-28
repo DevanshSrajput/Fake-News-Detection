@@ -5,3 +5,5 @@ seaborn
 scikit-learn
 nltk
 tqdm
+streamlit
+plotly
