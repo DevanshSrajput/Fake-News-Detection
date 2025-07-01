@@ -6,6 +6,16 @@ Welcome to the <b>Fake News Detector</b>, the overly concerned Python project th
 
 ---
 
+## 🎬 Video Walkthrough
+
+> <b>Watch the magic happen:</b>
+>
+> [![Demo Video](https://github.com/DevanshSrajput/Fake-News-Detection/blob/main/Fake-News-Detection.png)](https://youtu.be/a08yk5JGODs)
+>
+> <i>Click the thumbnail above to see a full walkthrough of the Fake News Detector in action!</i>
+
+---
+
 ## 🚀 Features
 
 - Text preprocessing that’s cleaner than your browser history.
@@ -72,15 +82,6 @@ streamlit run app.py
 
 ---
 
-## 🎬 Demo Video
-
-> <b>Watch the magic happen:</b>
->
-> [![Demo Video](https://img.youtube.com/vi/your-demo-video-id/0.jpg)](https://www.youtube.com/watch?v=your-demo-video-id)
->
-> <i>Click the thumbnail above to see a full walkthrough of the Fake News Detector in action!</i>
-
----
 
 # 📊 Sample Output
 
