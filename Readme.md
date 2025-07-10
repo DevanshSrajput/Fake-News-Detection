@@ -14,9 +14,6 @@ Welcome to the <b>Fake News Detector</b>, the overly concerned Python project th
 >
 > <i>Click the thumbnail above to see a full walkthrough of the Fake News Detector in action!</i>
 
-
-### PS: Find the Demo Video Below
-
 ---
 
 ## 📸 Screenshots
