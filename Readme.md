@@ -4,7 +4,21 @@
 
 Welcome to the <b>Fake News Detector</b>, the overly concerned Python project that’s here to help you separate fact from fiction. Whether you’re tired of miracle mango diets or yet another “Elon buys Mars” headline, this machine learning system will gladly rain on their parade.
 
+
+### PS: Find the Demo Video Below
+
 ---
+
+## 📸 Screenshots
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  <img src="Screenshots/Dashboard.png" width="200"/>
+  <img src="Screenshots/Model_Training.png" width="200"/>
+  <img src="Screenshots/Detection-Model.png" width="200"/>
+  <img src="Screenshots/Detected.png" width="200"/>
+  <img src="Screenshots/Comparison.png" width="200"/>
+  <img src="Screenshots/About.png" width="200"/>
+</div>
 
 ## 🚀 Features
 
