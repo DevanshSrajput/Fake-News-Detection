@@ -4,10 +4,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import re
 import string
+import time
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import PassiveAggressiveClassifier
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score
 import nltk
 from nltk.corpus import stopwords
@@ -33,7 +34,7 @@ class FakeNewsDetector:
     def __init__(self):
         self.tfidf_vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
         self.pac_model = PassiveAggressiveClassifier(max_iter=1000, random_state=42)
-        self.svm_model = SVC(kernel='linear', random_state=42)
+        self.svm_model = LinearSVC(random_state=42, max_iter=5000)
         self.stemmer = PorterStemmer()
         self.stop_words = set(stopwords.words('english'))
         
@@ -173,6 +174,7 @@ class FakeNewsDetector:
         """
         Prepare data for machine learning with optimized preprocessing
         """
+        df = df.copy()
         print(f"Starting data preparation with {len(df)} articles...")
         
         # Use batch preprocessing for better performance
@@ -231,18 +233,46 @@ class FakeNewsDetector:
         print(f"Test set size: {X_test_tfidf.shape}")
         
         return X_train_tfidf, X_test_tfidf, y_train, y_test
+
+    def _normalize_confidence(self, score):
+        """
+        Convert raw decision scores into a stable 0-1 confidence value.
+        """
+        clipped_score = np.clip(abs(score), 0, 20)
+        return float(1 / (1 + np.exp(-clipped_score)))
+
+    def _label_from_prediction(self, prediction):
+        """
+        Convert binary predictions to readable labels.
+        """
+        return 'FAKE' if prediction == 1 else 'REAL'
     
-    def train_models(self, X_train, y_train):
+    def train_models(self, X_train, y_train, progress_callback=None):
         """
         Train both Passive Aggressive and SVM models
         """
+        if progress_callback:
+            progress_callback("Training Passive Aggressive Classifier...", 62)
         print("Training Passive Aggressive Classifier...")
+        pac_start = time.perf_counter()
         self.pac_model.fit(X_train, y_train)
+        pac_duration = time.perf_counter() - pac_start
         
-        print("Training SVM Classifier...")
+        if progress_callback:
+            progress_callback("Training Linear SVM classifier...", 74)
+        print("Training Linear SVM Classifier...")
+        svm_start = time.perf_counter()
         self.svm_model.fit(X_train, y_train)
+        svm_duration = time.perf_counter() - svm_start
         
         print("Models trained successfully!")
+        print(f"Passive Aggressive training time: {pac_duration:.2f} seconds")
+        print(f"Linear SVM training time: {svm_duration:.2f} seconds")
+
+        return {
+            'pac_training_seconds': pac_duration,
+            'svm_training_seconds': svm_duration
+        }
     
     def evaluate_model(self, model, X_test, y_test, model_name):
         """
@@ -334,14 +364,30 @@ class FakeNewsDetector:
         pac_prediction = self.pac_model.predict(article_tfidf)[0]
         svm_prediction = self.svm_model.predict(article_tfidf)[0]
         
-        # Get prediction probabilities (for PAC, we'll use decision function)
-        pac_confidence = abs(self.pac_model.decision_function(article_tfidf)[0])
+        # Convert raw decision scores to normalized confidences
+        pac_score = float(self.pac_model.decision_function(article_tfidf)[0])
+        svm_score = float(self.svm_model.decision_function(article_tfidf)[0])
+        pac_confidence = self._normalize_confidence(pac_score)
+        svm_confidence = self._normalize_confidence(svm_score)
+        consensus_votes = pac_prediction + svm_prediction
+        consensus_prediction = 1 if consensus_votes >= 1 else 0
+        agreement = pac_prediction == svm_prediction
+        confidence_gap = abs(pac_confidence - svm_confidence)
+        combined_confidence = float(np.mean([pac_confidence, svm_confidence]))
+        if not agreement:
+            combined_confidence = max(0.5, combined_confidence - (confidence_gap / 2))
         
         results = {
-            'pac_prediction': 'FAKE' if pac_prediction == 1 else 'REAL',
-            'svm_prediction': 'FAKE' if svm_prediction == 1 else 'REAL',
+            'pac_prediction': self._label_from_prediction(pac_prediction),
+            'svm_prediction': self._label_from_prediction(svm_prediction),
             'pac_confidence': pac_confidence,
-            'consensus': 'FAKE' if (pac_prediction + svm_prediction) >= 1 else 'REAL'
+            'svm_confidence': svm_confidence,
+            'pac_score': pac_score,
+            'svm_score': svm_score,
+            'agreement': agreement,
+            'confidence_gap': confidence_gap,
+            'combined_confidence': combined_confidence,
+            'consensus': self._label_from_prediction(consensus_prediction)
         }
         
         return results

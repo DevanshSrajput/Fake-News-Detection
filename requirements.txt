@@ -7,3 +7,4 @@ nltk
 tqdm
 streamlit
 plotly
+beautifulsoup4

@@ -1,0 +1,32 @@
+.DS_Store
+
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editor settings
+.vscode/
+.idea/
+
+# Streamlit local state
+.streamlit/secrets.toml
+
+# Model and local datasets
+*.pkl
+*.joblib
+*.csv

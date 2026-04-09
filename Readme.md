@@ -34,6 +34,8 @@ Welcome to the <b>Fake News Detector</b>, the overly concerned Python project th
 - Data visualization for all you graph lovers.
 - Confusion matrices that look exactly like how you feel reading fake news.
 - Custom article predictions so you can play detective at home.
+- URL-based article extraction for quick testing from published stories.
+- Prediction history and richer confidence breakdowns inside the Streamlit UI.
 - <b>Modern Web UI</b> (Streamlit): Because CLI is so 2010.
 
 ---
@@ -89,7 +91,7 @@ streamlit run app.py
 ```
 
 3. Your browser will open. If it doesn’t, open [http://localhost:8501](http://localhost:8501) yourself. (We believe in you.)
-4. Use the beautiful UI to train models, test articles, and see analytics. No command line required!
+4. Use the UI to train models, test pasted text or fetched article URLs, and see analytics. No command line required!
 
 ---
 
